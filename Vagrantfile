@@ -13,7 +13,7 @@ Vagrant.configure("2") do |config|
   end
 
   nfs_setting = RUBY_PLATFORM =~ /darwin/ || RUBY_PLATFORM =~ /linux/
-  config.vm.synced_folder "./", "/var/www", id: "vagrant-root" , :nfs => nfs_setting
+  config.vm.synced_folder "./www", "/var/www", id: "vagrant-root" , :nfs => nfs_setting
   config.vm.provision :shell, :inline =>
     "if [[ ! -f /apt-get-run ]]; then sudo apt-get update && sudo touch /apt-get-run; fi"
 
