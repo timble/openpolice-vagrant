@@ -201,7 +201,7 @@ nginx::resource::location { "phpmyadmin-php":
     'fastcgi_param'           => 'PATH_INFO $fastcgi_path_info',
     'fastcgi_param '          => 'PATH_TRANSLATED $document_root$fastcgi_path_info',
     'fastcgi_param  '         => 'SCRIPT_FILENAME $document_root$fastcgi_script_name',
-    'fastcgi_pass'            => 'unix:/var/run/php5-fpm.sock',
+    'fastcgi_pass'            => '127.0.0.1:9000',
     'fastcgi_index'           => 'index.php',
     'include'                 => 'fastcgi_params'
   },
