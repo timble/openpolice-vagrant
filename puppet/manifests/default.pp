@@ -30,41 +30,10 @@ package { [
 
 class { 'nginx': }
 
-
-nginx::resource::vhost { 'nooku.dev':
-  ensure       => present,
-  server_name  => [
-    'nooku.dev'  ],
-  listen_port  => 80,
-  index_files  => [
-    'index.html',
-    'index.htm',
-    'index.php'
-  ],
-  www_root     => '/var/www/',
-  try_files    => ['$uri', '$uri/', '/index.php?$args'],
-}
-
-$path_translated = 'PATH_TRANSLATED $document_root$fastcgi_path_info'
-$script_filename = 'SCRIPT_FILENAME $document_root$fastcgi_script_name'
-
-nginx::resource::location { 'nooku.dev-php':
-  ensure              => 'present',
-  vhost               => 'nooku.dev',
-  location            => '~ \.php$',
-  proxy               => undef,
-  try_files           => ['$uri', '$uri/', '/index.php?$args'],
-  www_root            => '/var/www/',
-  location_cfg_append => {
-    'fastcgi_split_path_info' => '^(.+\.php)(/.+)$',
-    'fastcgi_param'           => 'PATH_INFO $fastcgi_path_info',
-    'fastcgi_param '          => $path_translated,
-    'fastcgi_param  '         => $script_filename,
-    'fastcgi_pass'            => '127.0.0.1:9000',
-    'fastcgi_index'           => 'index.php',
-    'include'                 => 'fastcgi_params'
-  },
-  notify              => Class['nginx::service'],
+file { "${nginx::config::nx_temp_dir}/nginx.d/nooku-001":
+  ensure  => file,
+  content => template('nginx/vhost/nooku.erb'),
+  notify  => Class['nginx::service'],
 }
 
 class { 'php':
@@ -140,7 +109,7 @@ puphpet::ini { 'custom':
   value   => [
     'sendmail_path = /usr/bin/env catchmail -fnoreply@example.com',
     'display_errors = On',
-    'error_reporting = -1',
+    'error_reporting = E_ALL & ~E_STRICT',
     'upload_max_filesize = "256M"',
     'post_max_size = "256M"',
     'memory_limit = "128M"'
@@ -149,7 +118,6 @@ puphpet::ini { 'custom':
   notify  => Service['php5-fpm'],
   require => Class['php'],
 }
-
 
 class { 'mysql::server':
   config_hash   => {
@@ -163,17 +131,6 @@ exec { 'grant-all-to-root':
   command     => "mysql --user='root' --password='root' --execute=\"GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;\"",
   require => Class['phpmyadmin']
 }
-#mysql::db { '*':
- # grant    => [
- #   'ALL'
-  # ],
-  #user     => 'root',
-  #password => 'root',
-#host     => 'localhost',
-  #sql      => '/var/www/replace_this.sql',
-# charset  => 'utf8',
-# require  => Class['mysql::server'],
-#}
 
 class { 'phpmyadmin':
   require => [Class['mysql::server'], Class['mysql::config'], Class['php']],
