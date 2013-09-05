@@ -30,7 +30,7 @@ package { [
 
 class { 'nginx': }
 
-file { "${nginx::config::nx_temp_dir}/nginx.d/nooku-001":
+file { "${nginx::config::nx_temp_dir}/nginx.d/police-001":
   ensure  => file,
   content => template('nginx/vhost/nooku.erb'),
   notify  => Class['nginx::service'],
@@ -136,9 +136,9 @@ class { 'phpmyadmin':
   require => [Class['mysql::server'], Class['mysql::config'], Class['php']],
 }
 
-nginx::resource::vhost { 'phpmyadmin.nooku.dev':
+nginx::resource::vhost { 'phpmyadmin.police.dev':
   ensure      => present,
-  server_name => ['phpmyadmin.nooku.dev'],
+  server_name => ['phpmyadmin.police.dev'],
   listen_port => 80,
   index_files => ['index.php'],
   www_root    => '/usr/share/phpmyadmin',
@@ -148,7 +148,7 @@ nginx::resource::vhost { 'phpmyadmin.nooku.dev':
 
 nginx::resource::location { "phpmyadmin-php":
   ensure              => 'present',
-  vhost               => 'phpmyadmin.nooku.dev',
+  vhost               => 'phpmyadmin.police.dev',
   location            => '~ \.php$',
   proxy               => undef,
   try_files           => ['$uri', '$uri/', '/index.php?$args'],
@@ -163,7 +163,7 @@ nginx::resource::location { "phpmyadmin-php":
     'include'                 => 'fastcgi_params'
   },
   notify              => Class['nginx::service'],
-  require             => Nginx::Resource::Vhost['phpmyadmin.nooku.dev'],
+  require             => Nginx::Resource::Vhost['phpmyadmin.police.dev'],
 }
 
 class { 'mailcatcher': }
@@ -171,3 +171,5 @@ class { 'mailcatcher': }
 class { 'less': }
 
 class { 'uglifyjs': }
+
+class { 'scripts': }
