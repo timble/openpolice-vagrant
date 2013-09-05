@@ -15,7 +15,7 @@ class Installer
     );
 
     public $task;
-    public $database = 'nooku';
+    public $database = 'police';
     public $www = '/var/www/police.dev';
 
     public function __construct($task)
@@ -95,7 +95,7 @@ EOF;
         $result = `echo 'SHOW DATABASES LIKE "$this->database"' | mysql -uroot -proot`;
         if (!empty($result))
         {
-            $this->out("Database table already exists.\nRun 'nooku reinstall' to re-create it");
+            $this->out("Database table exists.\nRun 'police reinstall' if you would like to re-create it");
 
             return;
         }
