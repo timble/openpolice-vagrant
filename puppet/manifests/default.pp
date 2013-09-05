@@ -85,7 +85,7 @@ puphpet::ini { 'xdebug':
     'xdebug.remote_enable = 1',
     'xdebug.remote_handler = "dbgp"',
     'xdebug.remote_port = 9000',
-    'xdebug.remote_host = "192.168.50.10"',
+    'xdebug.remote_host = "192.168.52.10"',
     'xdebug.show_local_vars = 1',
     'xdebug.profiler_enable = 0',
     'xdebug.profiler_enable_trigger = 1',

@@ -10,13 +10,13 @@ if (!count(debug_backtrace())) {
 
 class Installer
 {
-    /*public static $files = array(
-        'schema.sql', 'data.sql', 'sample.sql'
-    );*/
+    public static $files = array(
+        'install.sql', 'views.sql', 'users.sql'
+    );
 
     public $task;
     public $database = 'nooku';
-    public $www = '/var/www/nooku.dev';
+    public $www = '/var/www/police.dev';
 
     public function __construct($task)
     {
@@ -82,8 +82,12 @@ class JSiteConfig extends JConfig
 }
 EOF;
 
-        mkdir($this->www.'/sites/5388/config', 0777, true);
-        file_put_contents($this->www.'/sites/5388/config/config.php', $template);
+        $dir = $this->www.'/sites/5388/config';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
+        file_put_contents($dir.'/config.php', $template);
     }
 
     public function createDatabase()
@@ -101,12 +105,17 @@ EOF;
             throw new \Exception(sprintf('Cannot create database %s. Error: %s', $this->database, $result));
         }
 
-        $file = $this->www.'/install/custom/mysql/install.sql';
+        $dir = $this->www.'/install/custom/mysql';
 
-        $result = `mysql -proot -uroot $this->database < $file`;
-        if (!empty($result)) { // MySQL returned an error
-            throw new \Exception(sprintf('Cannot import file %s. Error: %s', $file, $result));
+        foreach (self::$files as $file)
+        {
+            $result = `mysql -proot -uroot $this->database < $dir/$file`;
+            if (!empty($result)) { // MySQL returned an error
+                throw new \Exception(sprintf('Cannot import file %s. Error: %s', $file, $result));
+            }
         }
+
+
     }
 
     public function deleteDatabase()
@@ -130,6 +139,7 @@ EOF;
             $contents = preg_replace($pattern, $replacement, $contents);
         };
 
+        $replace('sendmail', '/usr/bin/env catchmail');
         $replace('theme', 'splash');
         $replace('user', 'root');
         $replace('password', 'root');
