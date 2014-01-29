@@ -15,7 +15,7 @@ class Installer
     );
 
     public $task;
-    public $database = 'police';
+    public $database = '9999';
     public $www = '/var/www/police.dev';
 
     public function __construct($task)
@@ -78,11 +78,11 @@ class Installer
 class JSiteConfig extends JConfig
 {
 	var \$theme = 'mobile';
-	var \$site = '5388';
+	var \$site = '9999';
 }
 EOF;
 
-        $dir = $this->www.'/sites/5388/config';
+        $dir = $this->www.'/sites/9999/config';
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
@@ -100,7 +100,7 @@ EOF;
             return;
         }
 
-        $result = `echo 'CREATE DATABASE $this->database CHARACTER SET utf8' | mysql -uroot -proot`;
+        $result = shell_exec("echo 'CREATE DATABASE `$this->database` CHARACTER SET utf8' | mysql -uroot -proot");
         if (!empty($result)) { // MySQL returned an error
             throw new \Exception(sprintf('Cannot create database %s. Error: %s', $this->database, $result));
         }
@@ -120,7 +120,7 @@ EOF;
 
     public function deleteDatabase()
     {
-        $result = `echo 'DROP DATABASE IF EXISTS $this->database' | mysql -uroot -proot`;
+        $result = shell_exec("echo 'DROP DATABASE IF EXISTS `$this->database`' | mysql -uroot -proot");
         if (!empty($result)) { // MySQL returned an error
             throw new \Exception(sprintf('Cannot delete database %s. Error: %s', $this->database, $result));
         }
