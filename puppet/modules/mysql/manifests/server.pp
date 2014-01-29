@@ -38,6 +38,17 @@ class mysql::server (
   package { 'mysql-server':
     ensure => $package_ensure,
     name   => $package_name,
+    require => [Package['mysql-common'], Package['libmysqlclient18']]
+  }
+
+  package {  'libmysqlclient18':
+    ensure => $package_ensure,
+    name   => 'libmysqlclient18'
+  }
+
+  package {  'mysql-common':
+    ensure => $package_ensure,
+    name   => 'mysql-common'
   }
 
   if $enabled {
