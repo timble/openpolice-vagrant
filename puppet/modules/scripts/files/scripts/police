@@ -15,7 +15,7 @@ class Installer
     );
 
     public $task;
-    public $database = '9999';
+    public $database = 'v2_9999';
     public $www = '/var/www/police.dev';
 
     public function __construct($task)
@@ -53,7 +53,8 @@ class Installer
         $this->createDatabase();
         $this->createMultisite();
         $this->modifyConfiguration();
-        //$this->runComposer();
+        $this->runComposer();
+        $this->runPhpmig();
     }
 
     public function uninstall()
@@ -151,6 +152,25 @@ EOF;
     {
         $this->out('Installing dependencies via Composer');
         $output = `cd $this->www; composer --no-interaction install`;
+    }
+
+    public function runPhpmig()
+    {
+        $this->out('Installing Phpmig dependencies via Composer');
+        $output = `cd $this->www/scripts/phpmig; composer --no-interaction install`;
+
+        $config = $this->www.'/scripts/phpmig/config.php';
+        if(!file_exists($config))
+        {
+            $contents = file_get_contents($this->www.'/scripts/phpmig/config.php-example');
+            $contents = preg_replace('/\$this\->host = \$config\->host/', "\$this->host = '192.168.52.10'", $contents);
+
+            file_put_contents($config, $contents);
+            chmod($config, 0644);
+        }
+
+        $this->out('Executing Phpmig migrations');
+        $output = `cd $this->www/scripts/phpmig; bin/phpmig migrate`;
     }
 
     public function out($text = '', $nl = true)
