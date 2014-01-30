@@ -124,16 +124,7 @@ class { 'mysql::server':
     'root_password' => 'root',
     'bind_address' => false,
   },
-  package_name => 'mariadb-server',
-
-  /*
-    Temporary fix to deal with version mismatches between Ubuntu and MariaDB repositories. If the problem has been resolved
-     and the Ubuntu repository has caught up to the latest versions, it's perfectly safe to remove this version restriction.
-
-    Also update: modules/mysql/manifests/server.pp
-    See: https://mariadb.com/kb/en/installing-mariadb-deb-files/#version-mismatch-between-mariadb-and-ubuntudebian-repositories
-  */
-  package_ensure => '5.5.34+maria-1~precise'
+  package_name => 'mariadb-server'
 }
 
 exec { 'grant-all-to-root':
