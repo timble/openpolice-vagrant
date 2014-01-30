@@ -114,8 +114,6 @@ EOF;
                 throw new \Exception(sprintf('Cannot import file %s. Error: %s', $file, $result));
             }
         }
-
-
     }
 
     public function deleteDatabase()
