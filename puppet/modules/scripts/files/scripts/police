@@ -11,7 +11,7 @@ if (!count(debug_backtrace())) {
 class Installer
 {
     public static $files = array(
-        'install.sql', 'views.sql', 'users.sql'
+        'schema.sql', 'data.sql', 'sample.sql'
     );
 
     public $task;
