@@ -15,7 +15,7 @@ class Installer
     );
 
     public $task;
-    public $database = 'v2_9999';
+    public $database = '9999';
     public $www = '/var/www/police.dev';
 
     public function __construct($task)
