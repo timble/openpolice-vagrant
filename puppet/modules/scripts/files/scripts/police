@@ -139,10 +139,16 @@ EOF;
         };
 
         $replace('sendmail', '/usr/bin/env catchmail');
-        $replace('theme', 'splash');
+        $replace('theme', 'mobile');
         $replace('user', 'root');
         $replace('password', 'root');
         $replace('db', $this->database);
+
+        $replace('mailer', 'smtp');
+        $replace('smtphost', 'localhost');
+        $replace('smtpport', 1025);
+        $replace('mailfrom', 'policebox@localhost.home');
+        $replace('fromname', 'Police Box');
 
         file_put_contents($output, $contents);
         chmod($output, 0644);
