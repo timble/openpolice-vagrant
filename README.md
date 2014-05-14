@@ -33,7 +33,7 @@ To test the new package locally, remove your current box and setup the local ver
     $ vagrant box remove belgianpolice/box
     $ vagrant box add /path/to/belgianpolice.box --name=belgianpolice/box
 	
-Go to your [Belgian Police Internat Platform](https://github.com/belgianpolice/internet-platform) clone and test: 
+Go to your [Belgian Police Internet Platform](https://github.com/belgianpolice/internet-platform) clone and test: 
 
     $ cd /path/to/internet-platform
     $ vagrant destroy # if you've created the box before
