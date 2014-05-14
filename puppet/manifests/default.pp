@@ -194,3 +194,7 @@ class { 'elasticsearch':
       }
   }
 }
+
+elasticsearch::plugin{'elasticsearch/marvel/latest':
+  module_dir => 'marvel'
+}
