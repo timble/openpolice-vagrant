@@ -44,6 +44,12 @@ class { 'php':
   module_prefix       => ''
 }
 
+file { '/etc/php5/fpm/pool.d/www.conf':
+  source  => 'puppet:///modules/php/www.conf',
+  require => Class['php'],
+  notify  => Service['php5-fpm']
+}
+
 php::module {
   [
     'php5-mysql',
