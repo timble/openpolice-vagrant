@@ -184,16 +184,13 @@ class { 'elasticsearch':
   java_install => true,
   manage_repo  => true,
   repo_version => '1.0',
-  config                   => {
-      'node'                 => {
-          'name'               => 'police001'
+  config  => {
+      'node' => {
+          'name'  => 'police001'
       },
-      'index'                => {
+      'index' => {
           'number_of_replicas' => '0',
           'number_of_shards'   => '5'
-      },
-      'network'              => {
-          'host'               => $::ipaddress
       }
   }
 }
