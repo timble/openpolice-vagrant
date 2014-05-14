@@ -51,6 +51,7 @@ class Installer
     public function install()
     {
         $this->createDatabase();
+        $this->setupMapping();
         $this->createMultisite();
         $this->modifyConfiguration();
         $this->runComposer();
@@ -60,6 +61,7 @@ class Installer
     public function uninstall()
     {
         $this->deleteDatabase();
+        $this->deleteIndices();
     }
 
     public function reinstall()
@@ -117,12 +119,24 @@ EOF;
         }
     }
 
+    public function setupMapping()
+    {
+        foreach (glob($this->www.'/install/elasticsearch/*.mapping') as $mapping) {
+            `/bin/bash $mapping`;
+        }
+    }
+
     public function deleteDatabase()
     {
         $result = shell_exec("echo 'DROP DATABASE IF EXISTS `$this->database`' | mysql -uroot -proot");
         if (!empty($result)) { // MySQL returned an error
             throw new \Exception(sprintf('Cannot delete database %s. Error: %s', $this->database, $result));
         }
+    }
+
+    public function deleteIndices()
+    {
+        `curl -s -XDELETE 'http://localhost:9200/*/'`;
     }
 
     public function modifyConfiguration()
