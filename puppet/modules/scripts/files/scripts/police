@@ -121,7 +121,7 @@ EOF;
 
     public function setupMapping()
     {
-        foreach (glob($this->www.'/install/elasticsearch/*.mapping') as $mapping) {
+        foreach (glob($this->www.'/install/custom/elasticsearch/*.mapping') as $mapping) {
             `/bin/bash $mapping`;
         }
     }
