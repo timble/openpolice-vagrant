@@ -12,10 +12,25 @@ and title != 'software-properties-common'
 |>
 
 apt::source { 'mariadb':
-  location => 'http://mariadb.cu.be//repo/5.5/ubuntu',
-  key      => 'cbcb082a1bb943db',
+    location   => 'http://mariadb.mirror.nucleus.be/repo/10.1/ubuntu',
+    repos      => 'main',
+    key        => 'cbcb082a1bb943db'
 }
-    
+
+apt::key { '4F4EA0AAE5267A6C': }
+
+apt::ppa { 'ppa:ondrej/php5':
+  require => Apt::Key['4F4EA0AAE5267A6C']
+}
+
+apt::key { 'nginx':
+  key     => 'FA4657A64602F602'
+}
+
+apt::ppa { 'ppa:adegtyarev/nginx-pagespeed':
+  require => Apt::Key['nginx']
+}
+
 class { 'puphpet::dotfiles': }
 
 package { [
@@ -28,7 +43,9 @@ package { [
   ensure  => 'installed',
 }
 
-class { 'nginx': }
+class { 'nginx':
+    require => Apt::Ppa['ppa:adegtyarev/nginx-pagespeed']
+}
 
 file { "${nginx::config::nx_temp_dir}/nginx.d/police-001":
   ensure  => file,
@@ -37,11 +54,13 @@ file { "${nginx::config::nx_temp_dir}/nginx.d/police-001":
 }
 
 class { 'php':
+  version             => latest,
   package             => 'php5-fpm',
   service             => 'php5-fpm',
   service_autorestart => false,
   config_file         => '/etc/php5/fpm/php.ini',
-  module_prefix       => ''
+  module_prefix       => '',
+  require             => Apt::Ppa['ppa:ondrej/php5']
 }
 
 file { '/etc/php5/fpm/pool.d/www.conf':
@@ -97,7 +116,7 @@ puphpet::ini { 'xdebug':
     'xdebug.profiler_enable_trigger = 1',
     'xdebug.max_nesting_level = 1000'
   ],
-  ini     => '/etc/php5/conf.d/zzz_xdebug.ini',
+  ini     => '/etc/php5/fpm/zzz_xdebug.ini',
   notify  => Service['php5-fpm'],
   require => Class['php'],
 }
@@ -106,7 +125,7 @@ puphpet::ini { 'php':
   value   => [
     'date.timezone = "Europe/Brussels"'
   ],
-  ini     => '/etc/php5/conf.d/zzz_php.ini',
+  ini     => '/etc/php5/fpm/zzz_php.ini',
   notify  => Service['php5-fpm'],
   require => Class['php'],
 }
@@ -120,7 +139,7 @@ puphpet::ini { 'custom':
     'post_max_size = "256M"',
     'memory_limit = "128M"'
   ],
-  ini     => '/etc/php5/conf.d/zzz_custom.ini',
+  ini     => '/etc/php5/fpm/zzz_custom.ini',
   notify  => Service['php5-fpm'],
   require => Class['php'],
 }
@@ -130,7 +149,8 @@ class { 'mysql::server':
     'root_password' => 'root',
     'bind_address' => false,
   },
-  package_name => 'mariadb-server'
+  package_name => 'mariadb-server',
+  require      => Apt::Source['mariadb']
 }
 
 exec { 'grant-all-to-root':
@@ -173,7 +193,7 @@ nginx::resource::location { "phpmyadmin-php":
 }
 
 exec { 'gem-i18n-legacy':
-  command => '/opt/vagrant_ruby/bin/gem install i18n -v=0.6.5',
+  command => 'sudo /opt/vagrant_ruby/bin/gem install i18n -v=0.6.5',
   unless  => 'test `/opt/vagrant_ruby/bin/gem list --local | grep -q 0.6.5; echo $?` -eq 0',
   path    => ['/usr/bin', '/bin'],
 }
