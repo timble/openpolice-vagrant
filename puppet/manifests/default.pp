@@ -116,7 +116,7 @@ puphpet::ini { 'xdebug':
     'xdebug.profiler_enable_trigger = 1',
     'xdebug.max_nesting_level = 1000'
   ],
-  ini     => '/etc/php5/fpm/zzz_xdebug.ini',
+  ini     => '/etc/php5/fpm/conf.d/zzz_xdebug.ini',
   notify  => Service['php5-fpm'],
   require => Class['php'],
 }
@@ -125,7 +125,7 @@ puphpet::ini { 'php':
   value   => [
     'date.timezone = "Europe/Brussels"'
   ],
-  ini     => '/etc/php5/fpm/zzz_php.ini',
+  ini     => '/etc/php5/fpm/conf.d/zzz_php.ini',
   notify  => Service['php5-fpm'],
   require => Class['php'],
 }
@@ -139,7 +139,7 @@ puphpet::ini { 'custom':
     'post_max_size = "256M"',
     'memory_limit = "128M"'
   ],
-  ini     => '/etc/php5/fpm/zzz_custom.ini',
+  ini     => '/etc/php5/fpm/conf.d/zzz_custom.ini',
   notify  => Service['php5-fpm'],
   require => Class['php'],
 }
