@@ -132,7 +132,7 @@ EOF;
         if (!empty($result)) { // MySQL returned an error
             throw new \Exception(sprintf('Cannot delete database %s. Error: %s', $this->database, $result));
         }
-    }ce
+    }
 
     public function deleteIndices()
     {
