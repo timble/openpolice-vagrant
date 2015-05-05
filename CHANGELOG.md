@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.0 (5 May 2015)
+
+- Fixed - Fix MailCatcher dependencies
+- Improved - Upgraded to PHP 5.5
+- Improved - Run composer from the root directory from now on
+- Improved - Moved elasticsearch mapping files to /install/custom
+
 ## 1.1.0 (14 May 2014)
 
 - Fixed - PHP-FPM should create the socket as user www-data.
